@@ -13,3 +13,5 @@ Lalu ulangi step 2
 3. ketik di terminal 'python backend/app.py'
 4. Lalu program harusnya berjalan dan akan mengeluarkan sebuah web 'http://127.0.0.1:5000'
 
+Note: Pada file zip juga ada file readme untuk beberapa hal yang ada di 1 folder tersebut
+
