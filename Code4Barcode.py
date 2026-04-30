@@ -33,7 +33,7 @@ def find_item(item_id):
 # To activate the camera
 cap = cv2.VideoCapture(0)
 
-print("Item Name Scanner Running (press 'q' to quit)")
+print("Item Scanner Running (press 'q' to quit)")
 
 while True:
     ret, frame = cap.read()
@@ -87,7 +87,7 @@ while True:
     if key == ord('q') or key == 27:
         break
 
-    if cv2.getWindowProperty("Item Name Scanner", cv2.WND_PROP_VISIBLE) < 1:
+    if cv2.getWindowProperty("Item Scanner", cv2.WND_PROP_VISIBLE) < 1:
         break
 
 cap.release()
