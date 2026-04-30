@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LabGuard Personal Workspace Assistant</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-main: #f8f9fc;
+      --card-bg: rgba(255, 255, 255, 0.78);
+      --blue-main: #2f4fdb;
+      --blue-soft: #6f8bff;
+      --blue-faint: #dce3f0;
+      --gold: #c8a96a;
+      --text-main: #1a1f2b;
+      --text-muted: #64748b;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --shadow-soft: 0 18px 45px rgba(47, 79, 219, 0.13);
+      --shadow-glow: 0 0 26px rgba(47, 79, 219, 0.22);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        linear-gradient(rgba(47, 79, 219, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(47, 79, 219, 0.04) 1px, transparent 1px),
+        radial-gradient(circle at 12% 4%, rgba(111, 139, 255, 0.22), transparent 28%),
+        radial-gradient(circle at 88% 18%, rgba(200, 169, 106, 0.16), transparent 24%),
+        radial-gradient(circle at 50% 100%, rgba(47, 79, 219, 0.10), transparent 34%),
+        var(--bg-main);
+      background-size: 42px 42px, 42px 42px, auto, auto, auto, auto;
+      color: var(--text-main);
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(22px);
+      border-bottom: 1px solid var(--blue-faint);
+      color: var(--text-main);
+      padding: 18px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 8px 30px rgba(47, 79, 219, 0.08);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-mark {
+      width: 48px;
+      height: 48px;
+      border: 2px solid var(--blue-main);
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      color: var(--blue-main);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 800;
+      box-shadow: var(--shadow-glow);
+      background: rgba(255, 255, 255, 0.82);
+    }
+
+    header h1 {
+      font-size: 24px;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+    }
+
+    header span {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    #currentTime {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--blue-main);
+      border: 1px solid var(--blue-faint);
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.84);
+      box-shadow: 0 0 22px rgba(47, 79, 219, 0.10);
+    }
+
+    .container {
+      padding: 28px;
+      display: grid;
+      grid-template-columns: minmax(320px, 0.85fr) minmax(0, 1.15fr);
+      gap: 24px;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--blue-faint);
+      border-radius: 24px;
+      box-shadow: var(--shadow-soft);
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 110px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--gold), var(--blue-main));
+    }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      margin-bottom: 8px;
+    }
+
+    h2 {
+      margin-bottom: 14px;
+      font-size: 20px;
+      color: var(--blue-main);
+      letter-spacing: -0.03em;
+    }
+
+    .login-panel {
+      min-height: 420px;
+    }
+
+    .id-card-preview {
+      background:
+        linear-gradient(rgba(47, 79, 219, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(47, 79, 219, 0.06) 1px, transparent 1px),
+        rgba(255,255,255,0.75);
+      background-size: 24px 24px;
+      border: 1px solid var(--blue-faint);
+      border-radius: 22px;
+      padding: 18px;
+      margin: 18px 0;
+    }
+
+    .avatar {
+      width: 76px;
+      height: 76px;
+      border-radius: 24px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--blue-main), var(--blue-soft));
+      color: white;
+      font-size: 28px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 12px;
+      box-shadow: 0 12px 28px rgba(47, 79, 219, 0.25);
+    }
+
+    .muted {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .profile-name {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 6px;
+    }
+
+    .profile-meta {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 14px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .stat {
+      background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(238,243,255,0.72));
+      padding: 17px;
+      border-radius: 18px;
+      border: 1px solid var(--blue-faint);
+      border-left: 5px solid var(--blue-main);
+      box-shadow: 0 10px 25px rgba(47, 79, 219, 0.08);
+    }
+
+    .stat h3 {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .stat p {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-main);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .workspace-view {
+      position: relative;
+      height: 260px;
+      background:
+        linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px),
+        linear-gradient(135deg, var(--blue-main), var(--blue-soft));
+      background-size: 28px 28px, 28px 28px, auto;
+      border-radius: 22px;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 16px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      box-shadow: inset 0 0 40px rgba(255,255,255,0.12), 0 12px 28px rgba(47, 79, 219, 0.22);
+      overflow: hidden;
+    }
+
+    .workspace-view::before {
+      content: "";
+      position: absolute;
+      width: 78%;
+      height: 2px;
+      background: rgba(255,255,255,0.60);
+      animation: scanLine 2.4s infinite linear;
+      box-shadow: 0 0 18px rgba(255,255,255,0.72);
+    }
+
+    @keyframes scanLine {
+      0% { top: 12%; opacity: 0; }
+      12% { opacity: 1; }
+      88% { opacity: 1; }
+      100% { top: 88%; opacity: 0; }
+    }
+
+    .procedure-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .procedure-step,
+    .alert-item,
+    .chemical-item {
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid var(--blue-faint);
+      padding: 14px;
+      border-radius: 18px;
+      box-shadow: 0 8px 24px rgba(47, 79, 219, 0.06);
+    }
+
+    .procedure-step strong,
+    .chemical-item strong {
+      color: var(--blue-main);
+    }
+
+    .badge {
+      padding: 6px 11px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: 1px solid transparent;
+      font-family: 'JetBrains Mono', monospace;
+      margin: 4px 4px 4px 0;
+    }
+
+    .safe { background: rgba(34, 197, 94, 0.12); color: #15803d; border-color: rgba(34, 197, 94, 0.28); }
+    .warning { background: rgba(245, 158, 11, 0.13); color: #92400e; border-color: rgba(245, 158, 11, 0.28); }
+    .danger { background: rgba(239, 68, 68, 0.12); color: #b91c1c; border-color: rgba(239, 68, 68, 0.28); }
+    .neutral { background: rgba(47, 79, 219, 0.10); color: var(--blue-main); border-color: rgba(47, 79, 219, 0.22); }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 15px;
+      font-weight: 800;
+      cursor: pointer;
+      margin: 7px 4px 6px 0;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      transition: 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.04);
+    }
+
+    .btn-primary { background: var(--blue-main); color: white; box-shadow: 0 8px 20px rgba(47,79,219,0.28); }
+    .btn-success { background: var(--success); color: white; }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-warning { background: var(--gold); color: white; }
+    .btn-light { background: rgba(47,79,219,0.10); color: var(--blue-main); border: 1px solid rgba(47,79,219,0.18); }
+
+    .checklist label {
+      display: block;
+      margin: 10px 0;
+      cursor: pointer;
+      color: var(--text-main);
+      font-size: 14px;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 8px;
+      accent-color: var(--blue-main);
+    }
+
+    .voice-box {
+      background: rgba(238, 243, 255, 0.76);
+      border: 1px dashed var(--blue-soft);
+      padding: 15px;
+      border-radius: 18px;
+      margin-top: 12px;
+    }
+
+    .voice-box h3 {
+      color: var(--gold);
+      margin-bottom: 8px;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .voice-box p,
+    .alert-item p,
+    .chemical-item p {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 950px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+      }
+
+      .container {
+        grid-template-columns: 1fr;
+        padding: 16px;
+      }
+
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="brand">
+      <div class="brand-mark">LG</div>
+      <div>
+        <h1>LabGuard Personal Workspace Assistant</h1>
+        <span>Worker POV safety system for guided laboratory procedures</span>
+      </div>
+    </div>
+    <span id="currentTime"></span>
+  </header>
+
+  <main class="container">
+    <section>
+      <div class="card login-panel" id="loginPanel">
+        <p class="section-label">Step 01 / Identity Verification</p>
+        <h2>Tap Your Lab ID Card</h2>
+        <p class="muted">Prototype mode: choose a worker below. Later, this button can be replaced by your teammate’s real QR or ID card scanner.</p>
+
+        <div class="id-card-preview">
+          <div class="avatar">?</div>
+          <p class="profile-name">No User Logged In</p>
+          <p class="profile-meta">Please verify identity to load your assigned workspace, task, APD checklist, chemicals, and shift timer.</p>
+          <span class="badge neutral">Waiting for ID</span>
+        </div>
+
+        <button class="btn-primary" onclick="loginWorker('bryan')">Login as Bryan</button>
+        <button class="btn-primary" onclick="loginWorker('aisha')">Login as Aisha</button>
+        <button class="btn-primary" onclick="loginWorker('daniel')">Login as Daniel</button>
+      </div>
+
+      <div class="card hidden" id="profilePanel">
+        <p class="section-label">Personal Workspace</p>
+        <h2 id="welcomeTitle">Welcome</h2>
+        <div class="id-card-preview">
+          <div class="avatar" id="profileAvatar">B</div>
+          <p class="profile-name" id="profileName">Bryan</p>
+          <p class="profile-meta" id="profileMeta">Workspace 1 • Shift 08:00 - 12:00</p>
+          <span class="badge neutral" id="taskBadge">Task Loaded</span>
+          <span class="badge safe" id="accessBadge">Access Verified</span>
+        </div>
+        <button class="btn-danger" onclick="logoutWorker()">End Shift / Logout</button>
+      </div>
+
+      <div class="card hidden" id="statusPanel">
+        <p class="section-label">Your Status</p>
+        <h2>Shift & Safety Overview</h2>
+        <div class="grid-3">
+          <div class="stat">
+            <h3>Workspace</h3>
+            <p id="workspaceStat">1</p>
+          </div>
+          <div class="stat">
+            <h3>APD Status</h3>
+            <p id="apdStat">Pending</p>
+          </div>
+          <div class="stat">
+            <h3>Shift</h3>
+            <p id="shiftStat">08-12</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card hidden" id="cameraPanel">
+        <p class="section-label">Your Workspace Camera</p>
+        <h2>Personal Safety Scan</h2>
+        <div class="workspace-view" id="workspaceCameraText">WORKSPACE CAMERA</div>
+        <span class="badge neutral">Camera Node Active</span>
+        <span class="badge neutral">Recording Optional</span>
+      </div>
+    </section>
+
+    <aside>
+      <div class="card hidden" id="taskPanel">
+        <p class="section-label">Assigned Procedure</p>
+        <h2 id="taskTitle">Task</h2>
+        <div class="procedure-list" id="procedureList"></div>
+      </div>
+
+      <div class="card hidden" id="apdPanel">
+        <p class="section-label">APD Verification</p>
+        <h2>Protective Equipment Checklist</h2>
+        <div class="checklist">
+          <label><input type="checkbox" id="labCoat"> Lab coat detected</label>
+          <label><input type="checkbox" id="gloves"> Gloves detected</label>
+          <label><input type="checkbox" id="goggles"> Safety goggles detected</label>
+          <label><input type="checkbox" id="mask"> Mask detected</label>
+        </div>
+        <button class="btn-success" onclick="checkAPD()">Run APD Scan</button>
+        <p class="muted" id="apdResult">Waiting for APD scan.</p>
+      </div>
+
+      <div class="card hidden" id="chemicalPanel">
+        <p class="section-label">Chemical Verification</p>
+        <h2>Barcode-Based Chemical Check</h2>
+        <div id="chemicalButtons"></div>
+        <button class="btn-warning" onclick="checkChemicalRisk()">Check Compatibility</button>
+        <div class="chemical-item">
+          <strong>Scanned Chemicals</strong>
+          <p id="chemicalStatus">No chemical scanned.</p>
+        </div>
+      </div>
+
+      <div class="card hidden" id="assistantPanel">
+        <p class="section-label">Voice Assistant</p>
+        <h2>Hands-Free Help</h2>
+        <div class="voice-box">
+          <h3>Command Output</h3>
+          <p id="voiceOutput">Try: “Show procedure”, “Show hazard”, or “Call supervisor”.</p>
+          <button class="btn-primary" onclick="voiceCommand('show procedure')">Show Procedure</button>
+          <button class="btn-primary" onclick="voiceCommand('show hazard')">Show Hazard</button>
+          <button class="btn-danger" onclick="voiceCommand('call supervisor')">Call Supervisor</button>
+        </div>
+      </div>
+
+      <div class="card hidden" id="alertPanel">
+        <p class="section-label">Personal Safety Feed</p>
+        <h2>Your Alerts</h2>
+        <div id="alerts"></div>
+        <button class="btn-warning" onclick="simulateNoMovement()">Simulate No Movement</button>
+        <button class="btn-danger" onclick="simulateGasLeak()">Simulate Gas Leak</button>
+        <button class="btn-light" onclick="clearAlerts()">Clear Alerts</button>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    const workers = {
+      bryan: {
+        name: "Bryan",
+        initial: "B",
+        workspace: "1",
+        shift: "08:00 - 12:00",
+        shortShift: "08-12",
+        task: "Paracetamol Synthesis Preparation",
+        access: "Research Assistant",
+        chemicals: ["Acetic Anhydride", "Hydrochloric Acid"],
+        procedure: [
+          "Verify identity using lab ID card.",
+          "Complete APD check before opening chemicals.",
+          "Scan each chemical barcode before use.",
+          "Follow the synthesis preparation checklist on the tablet.",
+          "Submit result and end shift by rescanning ID card."
+        ]
+      },
+      aisha: {
+        name: "Aisha",
+        initial: "A",
+        workspace: "2",
+        shift: "08:00 - 12:00",
+        shortShift: "08-12",
+        task: "Chemical Inventory Verification",
+        access: "Lab Inventory Officer",
+        chemicals: ["Ethanol", "Sodium Hydroxide"],
+        procedure: [
+          "Verify identity using lab ID card.",
+          "Run APD scan before handling inventory.",
+          "Scan chemical barcode and match it with database record.",
+          "Flag expired or misplaced chemicals.",
+          "Submit inventory report before ending shift."
+        ]
+      },
+      daniel: {
+        name: "Daniel",
+        initial: "D",
+        workspace: "3",
+        shift: "10:00 - 14:00",
+        shortShift: "10-14",
+        task: "Acid-Base Reaction Test",
+        access: "Chemistry Analyst",
+        chemicals: ["Hydrochloric Acid", "Sodium Hydroxide"],
+        procedure: [
+          "Verify identity using lab ID card.",
+          "Complete APD scan and confirm eyewear protection.",
+          "Scan acid and base containers before experiment.",
+          "Start reaction test only after compatibility approval.",
+          "Record observation and confirm workspace shutdown."
+        ]
+      }
+    };
+
+    let currentWorker = null;
+    let scannedChemicals = [];
+    let alerts = [];
+
+    function updateTime() {
+      const now = new Date();
+      document.getElementById("currentTime").textContent = now.toLocaleString();
+    }
+
+    function loginWorker(workerId) {
+      currentWorker = workers[workerId];
+      scannedChemicals = [];
+      alerts = [`${currentWorker.name} verified. Personal workspace loaded.`];
+
+      document.getElementById("loginPanel").classList.add("hidden");
+      ["profilePanel", "statusPanel", "cameraPanel", "taskPanel", "apdPanel", "chemicalPanel", "assistantPanel", "alertPanel"].forEach(id => {
+        document.getElementById(id).classList.remove("hidden");
+      });
+
+      document.getElementById("welcomeTitle").textContent = `Welcome, ${currentWorker.name}`;
+      document.getElementById("profileAvatar").textContent = currentWorker.initial;
+      document.getElementById("profileName").textContent = currentWorker.name;
+      document.getElementById("profileMeta").textContent = `Workspace ${currentWorker.workspace} • ${currentWorker.shift} • ${currentWorker.access}`;
+      document.getElementById("workspaceStat").textContent = currentWorker.workspace;
+      document.getElementById("apdStat").textContent = "Pending";
+      document.getElementById("shiftStat").textContent = currentWorker.shortShift;
+      document.getElementById("workspaceCameraText").textContent = `WORKSPACE ${currentWorker.workspace} SCAN`;
+      document.getElementById("taskTitle").textContent = currentWorker.task;
+
+      renderProcedure();
+      renderChemicalButtons();
+      renderAlerts();
+      document.getElementById("chemicalStatus").textContent = "No chemical scanned.";
+      document.getElementById("apdResult").textContent = "Waiting for APD scan.";
+    }
+
+    function logoutWorker() {
+      if (currentWorker) {
+        alert(`${currentWorker.name}'s shift has ended safely.`);
+      }
+
+      currentWorker = null;
+      scannedChemicals = [];
+      alerts = [];
+
+      document.getElementById("loginPanel").classList.remove("hidden");
+      ["profilePanel", "statusPanel", "cameraPanel", "taskPanel", "apdPanel", "chemicalPanel", "assistantPanel", "alertPanel"].forEach(id => {
+        document.getElementById(id).classList.add("hidden");
+      });
+    }
+
+    function renderProcedure() {
+      const procedureList = document.getElementById("procedureList");
+      procedureList.innerHTML = "";
+
+      currentWorker.procedure.forEach((step, index) => {
+        procedureList.innerHTML += `
+          <div class="procedure-step">
+            <strong>Step ${index + 1}</strong>
+            <p class="muted">${step}</p>
+          </div>
+        `;
+      });
+    }
+
+    function renderChemicalButtons() {
+      const chemicalButtons = document.getElementById("chemicalButtons");
+      chemicalButtons.innerHTML = "";
+
+      currentWorker.chemicals.forEach(chemical => {
+        chemicalButtons.innerHTML += `<button class="btn-primary" onclick="scanChemical('${chemical}')">Scan ${chemical}</button>`;
+      });
+    }
+
+    function checkAPD() {
+      const labCoat = document.getElementById("labCoat").checked;
+      const gloves = document.getElementById("gloves").checked;
+      const goggles = document.getElementById("goggles").checked;
+      const mask = document.getElementById("mask").checked;
+
+      if (labCoat && gloves && goggles && mask) {
+        document.getElementById("apdResult").textContent = "✅ APD approved. You may continue your task.";
+        document.getElementById("apdStat").textContent = "Approved";
+        addAlert("APD approved by personal workspace camera.");
+      } else {
+        document.getElementById("apdResult").textContent = "❌ APD incomplete. Please complete protective equipment before continuing.";
+        document.getElementById("apdStat").textContent = "Failed";
+        addAlert("APD scan failed. Missing required equipment.");
+      }
+    }
+
+    function scanChemical(name) {
+      if (!scannedChemicals.includes(name)) {
+        scannedChemicals.push(name);
+      }
+
+      document.getElementById("chemicalStatus").textContent = scannedChemicals.join(", ");
+      addAlert(`${name} barcode scanned for your assigned task.`);
+    }
+
+    function checkChemicalRisk() {
+      if (scannedChemicals.includes("Acetic Anhydride") && scannedChemicals.includes("Hydrochloric Acid")) {
+        document.getElementById("chemicalStatus").innerHTML = `${scannedChemicals.join(", ")}<br>🚨 Compatibility warning. Supervisor approval required.`;
+        addAlert("Chemical compatibility warning detected. Supervisor approval required.");
+      } else if (scannedChemicals.length === 0) {
+        document.getElementById("chemicalStatus").textContent = "No chemical scanned.";
+      } else {
+        document.getElementById("chemicalStatus").innerHTML = `${scannedChemicals.join(", ")}<br>✅ No major compatibility issue detected in prototype database.`;
+        addAlert("Chemical compatibility check completed for your workspace.");
+      }
+    }
+
+    function voiceCommand(command) {
+      const output = document.getElementById("voiceOutput");
+
+      if (command === "show procedure") {
+        output.textContent = currentWorker.procedure.join(" → ");
+      } else if (command === "show hazard") {
+        output.textContent = "Hazard info: Follow APD requirements, avoid inhalation, scan all chemical barcodes, and request supervisor approval for flagged combinations.";
+      } else if (command === "call supervisor") {
+        output.textContent = "🚨 Supervisor has been notified for your workspace.";
+        addAlert("Supervisor assistance requested from your workspace.");
+      }
+    }
+
+    function simulateNoMovement() {
+      addAlert("No movement detected for 60 minutes. Stretch reminder activated. Supervisor notified if no response.");
+    }
+
+    function simulateGasLeak() {
+      addAlert("Possible gas leak detected near your workspace. Emergency ventilation procedure activated.");
+    }
+
+    function clearAlerts() {
+      alerts = [];
+      renderAlerts();
+    }
+
+    function addAlert(message) {
+      alerts.unshift(message);
+      renderAlerts();
+    }
+
+    function renderAlerts() {
+      const alertBox = document.getElementById("alerts");
+      alertBox.innerHTML = "";
+
+      if (alerts.length === 0) {
+        alertBox.innerHTML = `<div class="alert-item"><p>No personal alerts at the moment.</p></div>`;
+        return;
+      }
+
+      alerts.forEach(alert => {
+        alertBox.innerHTML += `<div class="alert-item"><p>⚠️ ${alert}</p></div>`;
+      });
+    }
+
+    updateTime();
+    setInterval(updateTime, 1000);
+  </script>
+</body>
+
+</html>
