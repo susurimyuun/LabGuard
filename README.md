@@ -15,3 +15,5 @@ Lalu ulangi step 2
 
 Note: Pada file zip juga ada file readme untuk beberapa hal yang ada di 1 folder tersebut
 
+Submission yang harusnya kami submit ke platform : https://susurimyuun.github.io/LabGuard/
+
